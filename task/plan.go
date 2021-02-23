@@ -1,12 +1,13 @@
 package task
 
 import (
+	"fmt"
 	"log"
 	_ "net/http/pprof"
 	"sync"
 	"time"
 
-	"github.com/cheggaaa/pb"
+	"github.com/schollz/progressbar/v3"
 )
 
 type Plan struct {
@@ -110,21 +111,39 @@ func (p *Plan) startBar(wg *sync.WaitGroup, barChannel chan int) {
 		return
 	}
 	count := p.TaskDef.Loop * p.TaskDef.Concurrency
-	// create and start new bar
-	bar := pb.New(count).SetMaxWidth(100)
-	// bar.AlwaysUpdate = true
-	bar.SetRefreshRate(100 * time.Millisecond)
-	bar.TimeBoxWidth = 0
-	bar.SetWidth(100)
-	bar.Start()
 
+	// bar := pb.New(count).SetMaxWidth(100)
+	// bar.SetRefreshRate(100 * time.Millisecond)
+	// bar.TimeBoxWidth = 0
+	// bar.SetWidth(100)
+	// bar.Start()
+
+	// for i := 0; i < count; i++ {
+	// 	select {
+	// 	case step := <-barChannel:
+	// 		bar.Add(step)
+	// 	}
+	// }
+
+	// bar.Finish()
+
+	bar := progressbar.NewOptions(count,
+		progressbar.OptionEnableColorCodes(true),
+		progressbar.OptionSetWidth(30),
+		// progressbar.OptionSetDescription("[cyan]Testing...[reset] "),
+		progressbar.OptionSetPredictTime(false),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			Saucer:        "[green]=[reset]",
+			SaucerHead:    "[green]>[reset]",
+			SaucerPadding: " ",
+			BarStart:      "[",
+			BarEnd:        "]",
+		}))
 	for i := 0; i < count; i++ {
 		select {
 		case step := <-barChannel:
 			bar.Add(step)
 		}
 	}
-
-	bar.Finish()
-
+	fmt.Println()
 }
