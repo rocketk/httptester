@@ -1,11 +1,10 @@
 ### httptester
-对http接口进行压测
+A lightweight tool for pressure testing
 
 ### Get Started
 Download the latest binary file [Releases](https://github.com/rocketk/httptester/releases)
 
 Save the binary file `httptester` into any directory, and open the terminal
-
 
 For help
 ```bash
