@@ -236,5 +236,4 @@ func (d TaskDef) PrintToStdOut() {
 	fmt.Printf("URL: %s\n", d.URL)
 	fmt.Printf("Headers: %s\n", d.Headers)
 	fmt.Printf("Body: %s\n\n", d.Body)
-
 }

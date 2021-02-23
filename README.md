@@ -2,7 +2,7 @@
 对http接口进行压测
 
 ### Get Started
-Download the latest binary file [Releases]()
+Download the latest binary file [Releases](https://github.com/rocketk/httptester/releases)
 
 Save the binary file `httptester` into any directory, and open the terminal
 
