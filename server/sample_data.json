@@ -1,0 +1,34 @@
+[
+    {
+        "id": "732e930c-59ce-4087-b509-6288b5d2d6c5",
+        "name": "Jack",
+        "age": 18,
+        "stature": 180,
+        "weight": 62.5,
+        "available": true
+    },
+    {
+        "id": "30160f4c-a4ee-420b-ba61-fb0f78a3e312",
+        "name": "Mary",
+        "age": 25,
+        "stature": 175,
+        "weight": 60.5,
+        "available": true
+    },
+    {
+        "id": "04c7aca2-c27b-4ff1-8756-1bdf57ab7993",
+        "name": "Benjamin",
+        "age": 32,
+        "stature": 185,
+        "weight": 65,
+        "available": true
+    },
+    {
+        "id": "51784d48-4abd-4f01-83df-4cd43869027c",
+        "name": "Lee",
+        "age": 15,
+        "stature": 160,
+        "weight": 50.8,
+        "available": false
+    }
+]

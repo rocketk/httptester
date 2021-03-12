@@ -1,8 +1,10 @@
 package task
 
 import (
+	"log"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -100,6 +102,11 @@ func TestJsonPathAssertionSuccessForNumber(t *testing.T) {
 		StatusCode: 200,
 		Body:       responseJsonBodyBytes,
 	}
-	success, _ := ass.Assert(resp)
+	success, e := ass.Assert(resp)
+	log.Printf(e)
 	ast.True(success)
+}
+
+func TestUUID(t *testing.T) {
+	log.Println(uuid.NewUUID())
 }

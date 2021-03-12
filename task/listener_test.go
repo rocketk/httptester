@@ -31,13 +31,6 @@ func TestSliceSortingNotEqualToArray(t *testing.T) {
 	ast.NotEqual(a, b)
 }
 
-func TestSliceAppend(t *testing.T) {
-	ast := assert.New(t)
-	a := make([]int, 3)
-	b := append(a, 1)
-	ast.Equal(a, b)
-}
-
 func TestInt64Devided(t *testing.T) {
 	ast := assert.New(t)
 	var i int64

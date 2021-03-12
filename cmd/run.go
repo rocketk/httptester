@@ -25,20 +25,21 @@ import (
 )
 
 var (
-	loop                 int
-	concurrency          int
-	timeout              time.Duration
-	keepAlive            bool
-	url                  string
-	method               string
-	headers              []string
-	body                 string
-	assertStatusCodes    string
-	assertJSONExpression string
-	expectedCode         string
-	timeunit             string
-	disableBar           bool
-	printError           bool
+	loop                  int
+	concurrency           int
+	timeout               time.Duration
+	keepAlive             bool
+	url                   string
+	method                string
+	headers               []string
+	body                  string
+	assertStatusCodes     string
+	assertJSONExpression  string
+	assertRegexExpression string
+	expectedCode          string
+	timeunit              string
+	disableBar            bool
+	printError            bool
 )
 
 // runCmd represents the run command
@@ -72,6 +73,11 @@ httptester run --loop 10 --concurrency 100 --timeout 500ms --keep-alive false
 		if len(assertJSONExpression) > 0 {
 			assertions = append(assertions, &task.JsonPathAssertion{
 				Expression: assertJSONExpression,
+			})
+		}
+		if len(assertRegexExpression) > 0 {
+			assertions = append(assertions, &task.RegexAssertion{
+				Expression: assertRegexExpression,
 			})
 		}
 
@@ -120,9 +126,10 @@ func init() {
 	runCmd.Flags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "how many goroutines would run concurrently")
 	runCmd.Flags().StringVarP(&url, "url", "u", "", "the target url you want to test")
 	runCmd.Flags().StringVarP(&body, "body", "b", "", "the request body")
-	runCmd.Flags().StringArrayVarP(&headers, "header", "H", []string{""}, "the headers")
+	runCmd.Flags().StringArrayVarP(&headers, "header", "H", []string{}, "the headers")
 	runCmd.Flags().StringVarP(&assertStatusCodes, "assert-status-codes", "", "", "assertion: expected http response status codes, use space-splited string")
 	runCmd.Flags().StringVarP(&assertJSONExpression, "assert-json-expression", "", "", "assertion: use jsonpath expression to verify a field, e.g. '$.expensive == 10', which '$' means the root of the json body. see https://github.com/oliveagle/jsonpath for more details")
+	runCmd.Flags().StringVarP(&assertRegexExpression, "assert-regex-expression", "", "", "assertion: use regex expression to validate the response body, e.g. '$.expensive == 10'")
 	runCmd.Flags().StringVarP(&timeunit, "time-unit", "", "ms", "time unit for printing report and calculating the standard deviation. 'ms' for milli-second, 'mms' for micro-second, 'ns' for nano-second, 's' for second")
 	runCmd.Flags().StringVarP(&method, "method", "", "GET", "http method")
 	runCmd.Flags().BoolVarP(&printError, "print-error", "e", false, "to print the error information")

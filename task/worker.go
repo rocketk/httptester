@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -95,7 +96,7 @@ func (w *Worker) initClient() {
 		}).DialContext,
 		DisableKeepAlives:   !w.TaskDef.KeepAlive,
 		ForceAttemptHTTP2:   false,
-		MaxIdleConns:        w.TaskDef.Concurrency,
+		MaxIdleConns:        w.TaskDef.Concurrency * 2,
 		MaxIdleConnsPerHost: w.TaskDef.Concurrency,
 		MaxConnsPerHost:     0,
 		IdleConnTimeout:     90 * time.Second,
@@ -114,7 +115,28 @@ func (w *Worker) initClient() {
 func (w *Worker) doRequest(wg *sync.WaitGroup, summaryChannel chan Summary) {
 	summary := Summary{}
 	req, err := http.NewRequest(w.TaskDef.Method, w.TaskDef.URL, bytes.NewBuffer([]byte(w.TaskDef.Body)))
-	req.Header.Add("Connection", "keep-alive")
+	// req.Header.Add("Connection", "keep-alive")
+	// log.Printf("%+v", w.TaskDef.Headers)
+	if len(w.TaskDef.Headers) > 0 {
+		// log.Printf("len of headers: %d, headers: %+v\n", len(w.TaskDef.Headers), w.TaskDef.Headers)
+		for _, header := range w.TaskDef.Headers {
+			if strings.Trim(header, " ") == "" {
+				continue
+			}
+			pair := strings.Split(header, ":")
+			key := strings.Trim(pair[0], " ")
+			if key == "" {
+				continue
+			}
+			var value string
+			if len(pair) < 2 {
+				value = ""
+			} else {
+				value = pair[1]
+			}
+			req.Header.Add(key, value)
+		}
+	}
 	summary.StartTime = time.Now()
 	resp, err := w.httpClient.Do(req)
 	summary.EndTime = time.Now()
@@ -167,6 +189,9 @@ func (w *Worker) verifyAllAssertions(resp *http.Response, wg *sync.WaitGroup, su
 			summary.FailedAssertion = a.Name()
 			summary.FailedCause = cause
 			summaryChannel <- *summary
+			if w.TaskDef.PrintError {
+				log.Printf("Assertion Failed, Caused by: %s, %s\n", summary.FailedAssertion, summary.FailedCause)
+			}
 			return
 		}
 	}
