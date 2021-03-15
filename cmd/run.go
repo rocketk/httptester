@@ -25,10 +25,10 @@ import (
 )
 
 var (
-	loop                  int
-	concurrency           int
-	timeout               time.Duration
-	keepAlive             bool
+	loop        int
+	concurrency int
+	timeout     time.Duration
+	// keepAlive             bool
 	url                   string
 	method                string
 	headers               []string
@@ -40,6 +40,7 @@ var (
 	timeunit              string
 	disableBar            bool
 	printError            bool
+	insecure              bool
 )
 
 // runCmd represents the run command
@@ -85,14 +86,15 @@ httptester run --loop 10 --concurrency 100 --timeout 500ms --keep-alive false
 			Loop:        loop,
 			Concurrency: concurrency,
 			Timeout:     timeout,
-			KeepAlive:   keepAlive,
-			URL:         url,
-			Method:      method,
-			Headers:     headers,
-			Body:        body,
-			TimeUnit:    timeunit,
-			DisableBar:  disableBar,
-			PrintError:  printError,
+			// KeepAlive:   keepAlive,
+			URL:        url,
+			Method:     method,
+			Headers:    headers,
+			Body:       body,
+			TimeUnit:   timeunit,
+			DisableBar: disableBar,
+			PrintError: printError,
+			Insecure:   insecure,
 			// AssertStatusCodes:    intAssertStatusCodes,
 			// AssertJSONExpression: assertJSONExpression,
 		}
@@ -119,7 +121,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	runCmd.Flags().BoolVarP(&keepAlive, "keep-alive", "", true, "to use keep-alive for connections")
+	// runCmd.Flags().BoolVarP(&keepAlive, "keep-alive", "", true, "to use keep-alive for connections")
 	runCmd.Flags().BoolVarP(&disableBar, "disable-bar", "", false, "disable the progress bar")
 	runCmd.Flags().IntVarP(&loop, "loop", "l", 1, "how many requests would a goroutine send synchronously")
 	runCmd.Flags().IntVarP(&concurrency, "concurrency", "c", 1, "how many goroutines would run concurrently")
@@ -133,4 +135,5 @@ func init() {
 	runCmd.Flags().StringVarP(&timeunit, "time-unit", "", "ms", "time unit for printing report and calculating the standard deviation. 'ms' for milli-second, 'mms' for micro-second, 'ns' for nano-second, 's' for second")
 	runCmd.Flags().StringVarP(&method, "method", "", "GET", "http method")
 	runCmd.Flags().BoolVarP(&printError, "print-error", "e", false, "to print the error information")
+	runCmd.Flags().BoolVarP(&insecure, "insecure", "", true, "to ignore ssl certificates")
 }

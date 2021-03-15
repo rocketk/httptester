@@ -2,6 +2,7 @@ package task
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -16,14 +17,15 @@ type TaskDef struct {
 	Loop        int
 	Concurrency int
 	Timeout     time.Duration
-	KeepAlive   bool
-	URL         string
-	Method      string
-	Headers     []string
-	Body        string
-	TimeUnit    string
-	DisableBar  bool
-	PrintError  bool
+	// KeepAlive   bool
+	URL        string
+	Method     string
+	Headers    []string
+	Body       string
+	TimeUnit   string
+	DisableBar bool
+	PrintError bool
+	Insecure   bool
 	// AssertStatusCodes    []int
 	// AssertJSONExpression string
 }
@@ -82,11 +84,12 @@ func (w *Worker) StartLoop(wg *sync.WaitGroup, summaryChannel chan Summary) {
 
 func (w *Worker) initClient() {
 	var dialKeepAlive time.Duration
-	if w.TaskDef.KeepAlive {
-		dialKeepAlive = 120 * time.Second
-	} else {
-		dialKeepAlive = 1 * time.Nanosecond
-	}
+	// if w.TaskDef.KeepAlive {
+	// 	dialKeepAlive = 120 * time.Second
+	// } else {
+	// 	dialKeepAlive = 1 * time.Nanosecond
+	// }
+	dialKeepAlive = 120 * time.Second
 	reusedTransport := &http.Transport{
 		// Proxy: ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
@@ -94,11 +97,12 @@ func (w *Worker) initClient() {
 			KeepAlive: dialKeepAlive,
 			DualStack: true,
 		}).DialContext,
-		DisableKeepAlives:   !w.TaskDef.KeepAlive,
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: w.TaskDef.Insecure},
+		DisableKeepAlives:   false,
 		ForceAttemptHTTP2:   false,
-		MaxIdleConns:        w.TaskDef.Concurrency * 2,
-		MaxIdleConnsPerHost: w.TaskDef.Concurrency,
-		MaxConnsPerHost:     0,
+		MaxIdleConns:        1,
+		MaxIdleConnsPerHost: 1,
+		MaxConnsPerHost:     1,
 		IdleConnTimeout:     90 * time.Second,
 		TLSHandshakeTimeout: 90 * time.Second,
 		// ExpectContinueTimeout: 1 * time.Second,
@@ -255,7 +259,7 @@ func (d TaskDef) PrintToStdOut() {
 	fmt.Printf("Concurrency: %d\t", d.Concurrency)
 	fmt.Printf("Loop: %d\t", d.Loop)
 	fmt.Printf("Timeout: %d ms\t", d.Timeout.Milliseconds())
-	fmt.Printf("KeepAlive: %t\t", d.KeepAlive)
+	// fmt.Printf("KeepAlive: %t\t", d.KeepAlive)
 	fmt.Printf("TimeUnit: %s\t", d.TimeUnit)
 	fmt.Printf("Method: %s\t", d.Method)
 	fmt.Printf("URL: %s\n", d.URL)
