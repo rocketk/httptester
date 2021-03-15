@@ -130,31 +130,43 @@ curl -i http://localhost:1234/users
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-Date: Fri, 12 Mar 2021 05:59:12 GMT
+Date: Sat, 13 Mar 2021 13:28:48 GMT
 Content-Length: 459
 
-[{
-	"id": "30160f4c-a4ee-420b-ba61-fb0f78a3e312",
-	"name": "Mary",
-	"title": "",
-	"price": 0,
-	"weight": 60.5,
-	"available": true
-}, {
-	"id": "04c7aca2-c27b-4ff1-8756-1bdf57ab7993",
-	"name": "Benjamin",
-	"title": "",
-	"price": 0,
-	"weight": 65,
-	"available": true
-}, {
-	"id": "51784d48-4abd-4f01-83df-4cd43869027c",
-	"name": "Lee",
-	"title": "",
-	"price": 0,
-	"weight": 50.8,
-	"available": false
-}]
+[
+  {
+    "age" : 18,
+    "id" : "732e930c-59ce-4087-b509-6288b5d2d6c5",
+    "stature" : 180,
+    "weight" : 62.5,
+    "name" : "Jack",
+    "available" : true
+  },
+  {
+    "age" : 25,
+    "id" : "30160f4c-a4ee-420b-ba61-fb0f78a3e312",
+    "stature" : 175,
+    "weight" : 60.5,
+    "name" : "Mary",
+    "available" : true
+  },
+  {
+    "age" : 32,
+    "id" : "04c7aca2-c27b-4ff1-8756-1bdf57ab7993",
+    "stature" : 185,
+    "weight" : 65,
+    "name" : "Benjamin",
+    "available" : true
+  },
+  {
+    "age" : 15,
+    "id" : "51784d48-4abd-4f01-83df-4cd43869027c",
+    "stature" : 160,
+    "weight" : 50.799999999999997,
+    "name" : "Lee",
+    "available" : false
+  }
+]
 ```
 
 接下来我们来看在`httptester`中如何来写断言。
@@ -210,3 +222,8 @@ httptester run --method 'POST' -u 'http://localhost:1234/users' \
 
 `-e`表示如果出现失败或报错，将错误信息打印出来
 
+
+
+---
+如果对这个小工具感兴趣，欢迎给我点赞。
+如果有任何问题或建议，也欢迎给在此项目中给我提issue或者pull request。
